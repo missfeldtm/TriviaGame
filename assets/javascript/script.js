@@ -7,9 +7,7 @@ $(document).ready(function () {
     $("#start-btn").on('click', gamePlay.start);
 
     $(document).on('click', '.option', gamePlay.grader);
-    $('.container').on('click', '#game-reset', function () {
-        console.log('clicked');
-    });
+    $('.container').on('click', '#next-btn', gamePlay.generateQuestion);
 
 })
 
@@ -18,6 +16,7 @@ var gamePlay = {
     answersCorrect: 0,
     answersIncorrect: 0,
     unanswered: 0,
+
     //changes set of questions
     currentSet: 0,
 
@@ -71,9 +70,11 @@ var gamePlay = {
         var questionContent = Object.values(gamePlay.questions)[gamePlay.currentSet];
         var options = Object.values(gamePlay.options)[gamePlay.currentSet];
 
+        $("#panel").slideUp();
+
         //timer options
         gamePlay.time = 10;
-        this.run();
+        gamePlay.run();
 
         if (gamePlay.currentSet === Object.keys(gamePlay.questions).length) {
 
@@ -117,17 +118,25 @@ var gamePlay = {
             gamePlay.answersCorrect++;
 
             gamePlay.currentSet++;
-            gamePlay.generateQuestion();
+            $('.q-status').html('<p> Correct! </p>');
+
+
 
         } else {
 
             gamePlay.answersIncorrect++;
             console.log(gamePlay.answersIncorrect);
             gamePlay.currentSet++;
-            gamePlay.generateQuestion();
+
+            $('.q-status').html('<p> Incorrect! </p>');
+
 
         }
         gamePlay.stop();
+
+        $("#panel").slideDown("slow");
+
+
 
     },
 
@@ -140,7 +149,11 @@ var gamePlay = {
 
     decrement: function () {
         var convertTime = gamePlay.timeConverter(gamePlay.time);
-       
+
+        var answerKey = Object.values(gamePlay.answers)[gamePlay.currentSet];
+
+        var txt = $(this).text();
+
 
         gamePlay.time--;
 
@@ -148,12 +161,16 @@ var gamePlay = {
 
         if (gamePlay.time == 0) {
 
-            gamePlay.unanswered ++;
+            gamePlay.unanswered++;
 
-            console.log(gamePlay.unanswered);
 
             gamePlay.stop();
 
+
+            $("#panel").slideDown("slow");
+            $('.q-status').html('<p> You Ran Out Of Time! The Correct Answer was ' + answerKey + '</p>');
+
+            gamePlay.currentSet++;
 
 
 
@@ -188,7 +205,7 @@ var gamePlay = {
 
         clearInterval(gamePlay.intervalId);
 
-       
+
     }
 }
 

@@ -1,6 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:400,700');
 
 body{
-    background:pink;
+    background:url("../images/back.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    font-family: 'Ubuntu', sans-serif;
+
+    color:#fff;
+}
+
+
+.btn-primary{
+    background-color:#f1f1f1;
+    color:#111;
+    border-color: #111;
+
+    &:hover{
+        background-color: #111;
+        color:#f1f1f1;
+        border-color: #f1f1f1;
+
+    }
 }
 
 .mouseover{
@@ -14,4 +35,18 @@ body{
 #panel {
     padding: 50px;
     display: none;
+  }
+
+  #heading{
+
+  
+
+    h1{
+        margin-top:2rem;
+        
+    }
+   
+   
+
+
   }

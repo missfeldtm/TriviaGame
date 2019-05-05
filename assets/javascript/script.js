@@ -4,10 +4,13 @@ $(document).ready(function () {
 
     // event listeners
 
-    $("#start-btn").on('click', gamePlay.start);
+    $(document).on('click','#start-btn', gamePlay.start);
 
     $(document).on('click', '.option', gamePlay.grader);
-    $('.container').on('click', '#next-btn', gamePlay.generateQuestion);
+
+    $(document).on('click', '#next-btn', gamePlay.generateQuestion);
+
+    $(document).on('click', '#game-reset', gamePlay.gameReset);
 
 })
 
@@ -26,8 +29,8 @@ var gamePlay = {
         q1: 'What is Beyonce\'s Full Name?',
         q2: 'What is the name of Beyonce\'s groundbreaking album?',
         q3: 'Who is Beyonce\'s Husband?',
-        q4: 'What was the First Song Beyonce Released from Her Groundbreaking Album Lemonade?',
-        q5: 'Which song References "Becky with The Good Hair"?'
+        q4: 'What was the First Song Beyonce Released from Her Masterpiece Album Lemonade?',
+        q5: 'Which song References "Becky with The Good Hair"?',
     },
     //answers user can choose from
     options: {
@@ -46,6 +49,14 @@ var gamePlay = {
         q5: 'Sorry',
 
     },
+    gifs: {
+        q1: 'beyonce.gif',
+        q2: 'lemonade.gif',
+        q3: 'smash.gif',
+        q4: 'formation.gif',
+        q5: 'becky.gif',
+
+    },
 
     //game start
     start: function () {
@@ -55,10 +66,18 @@ var gamePlay = {
         gamePlay.answersIncorrect = 0;
         gamePlay.unanswered = 0;
         gamePlay.currentSet = 0;
+        clearInterval(gamePlay.timerId);
 
         $('#start-btn').hide();
 
         gamePlay.generateQuestion();
+
+    },
+
+    gameReset: function(){
+
+        $('.game-main').html('<button type="button" class="btn btn-primary" id="start-btn">Start</button><div id="question-container"></div><div id="option-container"></div>');
+
 
     },
 
@@ -70,6 +89,9 @@ var gamePlay = {
         var questionContent = Object.values(gamePlay.questions)[gamePlay.currentSet];
         var options = Object.values(gamePlay.options)[gamePlay.currentSet];
 
+        $("#question-container").show();
+        $("#option-container").show();
+
         $("#panel").slideUp();
 
         //timer options
@@ -77,6 +99,9 @@ var gamePlay = {
         gamePlay.run();
 
         if (gamePlay.currentSet === Object.keys(gamePlay.questions).length) {
+
+            gamePlay.stop();
+            $('#timer').hide();
 
             // adds results of game (correct, incorrect, unanswered) to the page
             $('.game-main')
@@ -105,11 +130,13 @@ var gamePlay = {
 
     },
 
-    grader: function (decision, answer) {
+    grader: function () {
 
         var answerKey = Object.values(gamePlay.answers)[gamePlay.currentSet];
 
         var txt = $(this).text();
+
+        var gifShow = Object.values(gamePlay.gifs)[gamePlay.currentSet];
 
         console.log(txt);
 
@@ -119,6 +146,7 @@ var gamePlay = {
 
             gamePlay.currentSet++;
             $('.q-status').html('<p> Correct! </p>');
+            $('.q-image').html('<img src="assets/images/' + gifShow + '">');
 
 
 
@@ -128,11 +156,14 @@ var gamePlay = {
             console.log(gamePlay.answersIncorrect);
             gamePlay.currentSet++;
 
-            $('.q-status').html('<p> Incorrect! </p>');
+            $('.q-status').html('<p> Incorrect! The Correct Answer was ' + answerKey + '</p>');
+            $('.q-image').html('<img src="assets/images/' + gifShow + '">');
 
 
         }
         gamePlay.stop();
+        $("#question-container").hide();
+        $("#option-container").hide();
 
         $("#panel").slideDown("slow");
 
@@ -153,6 +184,7 @@ var gamePlay = {
         var answerKey = Object.values(gamePlay.answers)[gamePlay.currentSet];
 
         var txt = $(this).text();
+        var gifShow = Object.values(gamePlay.gifs)[gamePlay.currentSet];
 
 
         gamePlay.time--;
@@ -167,8 +199,10 @@ var gamePlay = {
             gamePlay.stop();
 
 
-            $("#panel").slideDown("slow");
+            
             $('.q-status').html('<p> You Ran Out Of Time! The Correct Answer was ' + answerKey + '</p>');
+            $('.q-image').html('<img src="assets/images/' + gifShow + '">');
+            $("#panel").slideDown("slow");
 
             gamePlay.currentSet++;
 
@@ -257,38 +291,3 @@ var gamePlay = {
 //when done answering, display right and wrong score
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    <div class="col-md-12 text-center">
-        <h4 id="question-current">What Is Beyonce's Full Name?</h4>
-
-        <div id="choices-current">
-            <p>Beyoncé Giselle Knowles-Carter</p>
-            <p>Solange Piaget Knowles-Carter</p>
-            <p>Beyoncé Solange Knowles-Carter</p>
-            <p>Solange Beyoncé Knowles-Carter</p>
-        </div>
-
-
-    </div>
-
-    'What is Beyonce\'s full name?'
-['Beyoncé Giselle Knowles-Carter','Solange Piaget Knowles-Carter','Beyoncé Solange Knowles-Carter','Solange Beyoncé Knowles-Carter'
- */
